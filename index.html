@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Little Buddy - Parent Monitoring</title>
+    
+    <!-- Favicon Icon Mahkota Imut di Tab Browser -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Firebase SDK (Realtime DB Only) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- Custom Palette Matching Image Poster ROBO KNIGHTS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        posterBg: '#73b2dd',       // Sky Blue Background[cite: 2]
+                        posterCard: '#b3d6f1',     // Soft Powder Blue[cite: 2]
+                        posterDarkCard: '#3f6b97', // Steel Blue[cite: 2]
+                        posterNavy: '#1e3d60',     // Deep Denim Text[cite: 2]
+                        posterYellow: '#f3b21b',   // Bright Crown/Sparkle Yellow[cite: 2]
+                        posterOrange: '#ff6f28',   // Action Button Orange[cite: 1]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #73b2dd;
+        }
+        .poster-glow {
+            box-shadow: 0 10px 25px -5px rgba(30, 61, 96, 0.25);
+        }
+    </style>
+</head>
+<body class="text-posterNavy min-h-screen pb-12">
+
+    <!-- =================================================================== -->
+    <!-- SECTION 1: MODAL INPUT IDENTITAS SISWA -->
+    <!-- =================================================================== -->
+    <div id="loginSection" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-posterNavy/80 backdrop-blur-sm">
+        <div class="bg-posterCard border-4 border-white max-w-md w-full rounded-3xl p-6 sm:p-8 shadow-2xl poster-glow space-y-5 text-center">
+            
+            <!-- Crown & Header -->
+            <div class="space-y-2">
+                <div class="relative w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-md">
+                    <i data-lucide="crown" class="w-10 h-10 text-posterYellow fill-posterYellow"></i>
+                    <i data-lucide="sparkles" class="w-5 h-5 text-posterYellow absolute -top-1 -right-1 animate-pulse"></i>
+                </div>
+                <h1 class="text-2xl font-black text-posterNavy tracking-wider">SMART LITTLE BUDDY</h1>
+                <p class="text-xs font-bold text-posterNavy/80">Parent Monitoring Portal • Team Robo Knights</p>
+            </div>
+
+            <!-- Form Identitas Anak -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border-2 border-blue-100 space-y-4 text-left shadow-sm">
+                <h2 class="text-sm font-black text-posterNavy flex items-center gap-2">
+                    <i data-lucide="user-check" class="w-4 h-4 text-posterOrange"></i>
+                    Identitas Siswa (Anak)
+                </h2>
+
+                <div>
+                    <label class="text-[11px] font-black text-posterNavy/70 uppercase">NAMA LENGKAP ANAK</label>
+                    <input type="text" id="inputChildName" placeholder="Tuliskan nama anak"
+                        class="w-full mt-1 bg-blue-50 border-2 border-blue-200 focus:border-posterOrange text-posterNavy text-xs font-bold rounded-xl px-3.5 py-3 outline-none transition">
+                </div>
+                <div>
+                    <label class="text-[11px] font-black text-posterNavy/70 uppercase">UMUR ANAK (TAHUN)</label>
+                    <input type="number" id="inputChildAge" placeholder="Tuliskan umur anak" min="3" max="7"
+                        class="w-full mt-1 bg-blue-50 border-2 border-blue-200 focus:border-posterOrange text-posterNavy text-xs font-bold rounded-xl px-3.5 py-3 outline-none transition">
+                </div>
+
+                <!-- Tombol Lanjut ke Dashboard -->
+                <button type="button" onclick="goToDashboard()" class="w-full mt-2 bg-posterOrange hover:bg-orange-600 text-white font-black text-xs sm:text-sm py-3.5 px-4 rounded-2xl transition shadow-lg border-2 border-white flex items-center justify-center gap-2">
+                    <i data-lucide="arrow-right-circle" class="w-5 h-5"></i>
+                    Lanjut ke Dashboard
+                </button>
+            </div>
+            
+            <p class="text-[11px] text-posterNavy/70 font-bold">Smart Little Buddy Parent Dashboard</p>
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 2: PARENT DASHBOARD MAIN -->
+    <!-- =================================================================== -->
+    <div id="mainDashboard" class="hidden">
+        
+        <!-- Header Navigation -->
+        <header class="bg-[#5c9ecf] border-b-4 border-white/60 sticky top-0 z-50 shadow-md">
+            <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-4">
+                
+                <!-- Team Identity & Crown -->
+                <div class="flex items-center gap-3">
+                    <div class="relative bg-white p-2.5 rounded-2xl shadow-md flex items-center justify-center">
+                        <i data-lucide="crown" class="w-7 h-7 text-posterYellow fill-posterYellow"></i>
+                        <i data-lucide="sparkles" class="w-4 h-4 text-posterYellow absolute -top-1 -right-1 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <h1 class="font-black text-xl sm:text-2xl text-white tracking-wider drop-shadow-sm">SMART LITTLE BUDDY</h1>
+                            <span class="text-xs font-black bg-posterYellow text-posterNavy px-2 py-0.5 rounded-full uppercase shadow-sm">Parent Monitor</span>
+                        </div>
+                        <p class="text-xs text-blue-100 font-bold tracking-wide">Learning Portal by Robo Knights</p>
+                    </div>
+                </div>
+
+                <!-- Profile & Logout Badge -->
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex items-center gap-2 bg-white/90 border-2 border-white px-3.5 py-1.5 rounded-2xl shadow-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-xs font-black text-posterNavy">Firebase Synced 🟢</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 bg-posterDarkCard text-white px-3.5 py-1.5 rounded-2xl border-2 border-white/40 shadow-sm">
+                        <i data-lucide="user" class="w-4 h-4 text-posterYellow"></i>
+                        <span class="text-xs font-black">Parent Portal</span>
+                    </div>
+
+                    <button onclick="logout()" title="Keluar" class="bg-posterOrange hover:bg-orange-600 text-white p-2 rounded-2xl transition border-2 border-white shadow flex items-center justify-center">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 pt-6 space-y-6">
+            
+            <!-- Student Info Header Banner -->
+            <div class="bg-white border-4 border-white p-5 rounded-3xl shadow-xl flex flex-wrap justify-between items-center gap-4 poster-glow">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-posterCard rounded-2xl border-2 border-blue-200 flex items-center justify-center font-black text-posterNavy text-xl shadow-inner">
+                        <i data-lucide="heart" class="w-7 h-7 text-posterOrange fill-posterOrange"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="displayChildName" class="text-lg sm:text-xl font-black text-posterNavy">Laporan Belajar Siswa</h2>
+                            <i data-lucide="sparkles" class="w-5 h-5 text-posterYellow fill-posterYellow"></i>
+                        </div>
+                        <p id="displayChildAge" class="text-xs font-bold text-slate-500 mt-0.5">Umur: - Tahun • Status: Belajar Aktif bersama Smart Buddy</p>
+                    </div>
+                </div>
+                
+                <!-- Durasi Belajar Realtime -->
+                <div class="flex items-center gap-4 bg-posterCard p-3 rounded-2xl border-2 border-white">
+                    <div class="text-right">
+                        <p class="text-[10px] font-black text-posterNavy/70 uppercase">Durasi Belajar Hari Ini</p>
+                        <p id="totalLearningTime" class="text-lg font-black text-posterNavy">0 Menit</p>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl text-posterOrange border border-blue-100">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
+                    <p class="text-xs text-posterNavy font-bold">Modul Angka (1–5)</p>
+                    <p id="numScore" class="text-2xl sm:text-3xl font-black text-posterNavy mt-1">0%</p>
+                    <span id="numBadge" class="inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-400 text-white">Belum Ada Sesi</span>
+                </div>
+
+                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
+                    <p class="text-xs text-posterNavy font-bold">Modul Huruf (A–E)</p>
+                    <p id="letScore" class="text-2xl sm:text-3xl font-black text-posterNavy mt-1">0%</p>
+                    <span id="letBadge" class="inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-400 text-white">Belum Ada Sesi</span>
+                </div>
+
+                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
+                    <p class="text-xs text-posterNavy font-bold">Total Sesi Belajar</p>
+                    <p id="totalSessions" class="text-2xl sm:text-3xl font-black text-posterNavy mt-1">0 Sesi</p>
+                    <span class="inline-block mt-2 text-[10px] text-posterNavy/70 font-bold">Tersinkron di Cloud</span>
+                </div>
+
+                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
+                    <p class="text-xs text-posterNavy font-bold">Fokus Adaptive Robot</p>
+                    <p id="focusArea" class="text-2xl sm:text-3xl font-black text-posterDarkCard mt-1">-</p>
+                    <span class="inline-block mt-2 text-[10px] text-posterNavy/70 font-bold">Target Latihan Otomatis</span>
+                </div>
+            </div>
+
+            <!-- Chart & Adaptive Learning Insights -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Mastery Chart -->
+                <div class="lg:col-span-2 bg-posterCard border-4 border-white p-4 sm:p-6 rounded-3xl shadow-xl poster-glow">
+                    <h3 class="font-black text-posterNavy flex items-center gap-2 mb-4 text-sm sm:text-base">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-posterOrange"></i>
+                        Grafik Penguasaan Kartu (1–5 & A–E)
+                    </h3>
+                    <div class="relative w-full aspect-[16/9] sm:aspect-[2/1] bg-white p-3 rounded-2xl border-2 border-blue-100">
+                        <canvas id="masteryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Parent Tips Box -->
+                <div class="bg-posterCard border-4 border-white p-4 sm:p-6 rounded-3xl shadow-xl flex flex-col justify-between poster-glow">
+                    <div>
+                        <div class="flex items-center gap-2 text-posterNavy bg-white p-3 rounded-2xl border-2 border-blue-100 mb-4 shadow-sm">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-posterYellow fill-posterYellow"></i>
+                            <h3 class="font-black text-xs sm:text-sm">Rekomendasi Orang Tua</h3>
+                        </div>
+
+                        <p id="parentRecommendationText" class="text-xs text-posterNavy font-bold leading-relaxed mb-4">
+                            Sistem sedang menunggu data sesi belajar pertama anak dari Smart Little Buddy.
+                        </p>
+
+                        <div class="bg-white p-3.5 rounded-2xl border-2 border-blue-100 space-y-2 shadow-sm">
+                            <p class="text-xs font-black text-posterNavy flex items-center gap-1.5">
+                                <i data-lucide="crown" class="w-4 h-4 text-posterYellow fill-posterYellow"></i>
+                                Tips Pendampingan di Rumah:
+                            </p>
+                            <ul id="parentTipsList" class="text-xs text-posterNavy/80 font-bold space-y-1.5 pl-4 list-disc">
+                                <li>Lakukan sesi pengenalan kartu angka 1–5 secara menyenangkan.</li>
+                                <li>Dampingi anak saat memilih kartu jawaban di depan sensor robot.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t-2 border-white/60 flex justify-between items-center text-[11px] font-black text-posterNavy">
+                        <span>Database Status:</span>
+                        <span class="text-emerald-600">Firebase Synced 🟢</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Realtime Logs Table -->
+            <div class="bg-posterCard border-4 border-white p-4 sm:p-6 rounded-3xl shadow-xl poster-glow">
+                <h3 class="font-black text-posterNavy flex items-center gap-2 mb-4 text-sm sm:text-base">
+                    <i data-lucide="database" class="w-5 h-5 text-posterOrange"></i>
+                    Riwayat Sesi Belajar Realtime Database
+                </h3>
+
+                <div class="overflow-x-auto bg-white rounded-2xl border-2 border-blue-100 p-2">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-posterCard text-posterNavy font-black text-xs border-b border-blue-200">
+                            <tr>
+                                <th class="p-3">Waktu Sesi</th>
+                                <th class="p-3">Modul</th>
+                                <th class="p-3">Total Soal</th>
+                                <th class="p-3">Hasil Jawaban</th>
+                                <th class="p-3">Akurasi</th>
+                                <th class="p-3">Status Evaluasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessionLogs" class="divide-y divide-blue-100 text-posterNavy font-bold">
+                            <!-- Data Realtime Dimuat dari Firebase -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // -------------------------------------------------------------
+        // FIREBASE REALTIME DB CONFIGURATION
+        // -------------------------------------------------------------
+        const firebaseConfig = {
+            databaseURL: "https://smart-little-buddy-sgdrc-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+        const logsRef = db.ref("learning_sessions");
+
+        // Structure dasar untuk statistik penguasaan 10 kartu
+        let cardMastery = {
+            '1': { total: 0, correct: 0 },
+            '2': { total: 0, correct: 0 },
+            '3': { total: 0, correct: 0 },
+            '4': { total: 0, correct: 0 },
+            '5': { total: 0, correct: 0 },
+            'A': { total: 0, correct: 0 },
+            'B': { total: 0, correct: 0 },
+            'C': { total: 0, correct: 0 },
+            'D': { total: 0, correct: 0 },
+            'E': { total: 0, correct: 0 }
+        };
+
+        let masteryChart = null;
+
+        // -------------------------------------------------------------
+        // DASHBOARD SWITCHING LOGIC
+        // -------------------------------------------------------------
+        function goToDashboard() {
+            const rawName = document.getElementById('inputChildName').value.trim();
+            const rawAge = document.getElementById('inputChildAge').value.trim();
+
+            const childName = rawName !== "" ? rawName : "Siswa TK";
+            const childAge = rawAge !== "" ? rawAge : "5";
+
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+
+            document.getElementById('displayChildName').innerText = `Laporan Belajar: ${childName}`;
+            document.getElementById('displayChildAge').innerText = `Umur: ${childAge} Tahun • Status: Belajar Aktif bersama Smart Buddy`;
+
+            initChart();
+            listenFirebaseRealtime();
+        }
+
+        function logout() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('mainDashboard').classList.add('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // CHART INITIALIZATION
+        // -------------------------------------------------------------
+        function initChart() {
+            if (masteryChart) return;
+            const ctx = document.getElementById('masteryChart').getContext('2d');
+            masteryChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Angka 1', 'Angka 2', 'Angka 3', 'Angka 4', 'Angka 5', 'Huruf A', 'Huruf B', 'Huruf C', 'Huruf D', 'Huruf E'],
+                    datasets: [{
+                        label: 'Tingkat Penguasaan (%)',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            '#3f6b97', '#3f6b97', '#3f6b97', '#3f6b97', '#3f6b97',
+                            '#73b2dd', '#ff6f28', '#73b2dd', '#ff6f28', '#73b2dd'
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#1e3d60', font: { weight: 'bold' } } },
+                        x: { ticks: { color: '#1e3d60', font: { weight: 'bold' } } }
+                    }
+                }
+            });
+        }
+
+        // -------------------------------------------------------------
+        // REALTIME DATABASE LISTENER & AUTOMATIC ANALYTICS
+        // -------------------------------------------------------------
+        function listenFirebaseRealtime() {
+            logsRef.on('value', (snapshot) => {
+                const sessionLogsTable = document.getElementById('sessionLogs');
+                sessionLogsTable.innerHTML = "";
+
+                const data = snapshot.val();
+                let total = 0;
+                let numAccSum = 0, numCount = 0;
+                let letAccSum = 0, letCount = 0;
+
+                // Reset kartu
+                Object.keys(cardMastery).forEach(k => { cardMastery[k] = { total: 0, correct: 0 }; });
+
+                if (data) {
+                    const keys = Object.keys(data).reverse();
+                    total = keys.length;
+
+                    keys.forEach((key) => {
+                        const item = data[key];
+                        const row = document.createElement('tr');
+                        
+                        // Parse Akurasi
+                        let accVal = parseInt(item.accuracy) || 0;
+                        
+                        if (item.module && item.module.toLowerCase().includes('number')) {
+                            numAccSum += accVal;
+                            numCount++;
+                        } else if (item.module && item.module.toLowerCase().includes('letter')) {
+                            letAccSum += accVal;
+                            letCount++;
+                        }
+
+                        // Akumulasi data spesifik kartu jika ada
+                        if (item.card) {
+                            let c = item.card.toString().toUpperCase().replace('CARD ', '');
+                            if (cardMastery[c]) {
+                                cardMastery[c].total += 1;
+                                if (accVal >= 80) cardMastery[c].correct += 1;
+                            }
+                        }
+
+                        let statusBadge = accVal >= 80
+                            ? `<span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-full">Sangat Baik</span>`
+                            : `<span class="px-2.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-black rounded-full">Perlu Ditingkatkan</span>`;
+
+                        row.innerHTML = `
+                            <td class="p-3 text-slate-500">${item.time || 'Baru Saja'}</td>
+                            <td class="p-3 font-black text-posterDarkCard">${item.module || 'General'}</td>
+                            <td class="p-3">${item.totalQuestions || '1 Soal'}</td>
+                            <td class="p-3">${item.scoreDetail || '-'}</td>
+                            <td class="p-3 font-black text-posterOrange">${item.accuracy || '0%'}</td>
+                            <td class="p-3">${statusBadge}</td>
+                        `;
+                        sessionLogsTable.appendChild(row);
+                    });
+                } else {
+                    sessionLogsTable.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-bold">Belum ada data sesi belajar di Firebase.</td></tr>`;
+                }
+
+                // Kalkulasi rata-rata modul
+                let numAvg = numCount > 0 ? Math.round(numAccSum / numCount) : 0;
+                let letAvg = letCount > 0 ? Math.round(letAccSum / letCount) : 0;
+
+                document.getElementById('numScore').innerText = `${numAvg}%`;
+                document.getElementById('letScore').innerText = `${letAvg}%`;
+
+                // Badge Modul
+                updateBadge('numBadge', numAvg, numCount);
+                updateBadge('letBadge', letAvg, letCount);
+
+                // Update Total Sesi & Durasi
+                document.getElementById('totalSessions').innerText = `${total} Sesi`;
+                document.getElementById('totalLearningTime').innerText = `${total * 5} Menit`;
+
+                // Update Grafik & Adaptive Recommendation
+                updateChartAndRecommendations(total, numAvg, letAvg);
+            });
+        }
+
+        function updateBadge(id, avg, count) {
+            const el = document.getElementById(id);
+            if (count === 0) {
+                el.innerText = "Belum Ada Sesi";
+                el.className = "inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-400 text-white";
+            } else if (avg >= 80) {
+                el.innerText = "Sangat Menguasai";
+                el.className = "inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500 text-white";
+            } else {
+                el.innerText = "Perlu Latihan";
+                el.className = "inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-posterOrange text-white";
+            }
+        }
+
+        function updateChartAndRecommendations(totalSessions, numAvg, letAvg) {
+            let chartData = [];
+            let lowestCard = "-";
+            let lowestAcc = 101;
+
+            const cardKeys = ['1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E'];
+            
+            cardKeys.forEach(key => {
+                let cardObj = cardMastery[key];
+                let cardAcc = cardObj.total > 0 ? Math.round((cardObj.correct / cardObj.total) * 100) : (totalSessions > 0 ? (key <= '5' ? numAvg : letAvg) : 0);
+                chartData.push(cardAcc);
+
+                if (cardAcc < lowestAcc) {
+                    lowestAcc = cardAcc;
+                    lowestCard = key <= '5' ? `Angka ${key}` : `Huruf ${key}`;
+                }
+            });
+
+            // Refresh Chart
+            if (masteryChart) {
+                masteryChart.data.datasets[0].data = chartData;
+                masteryChart.update();
+            }
+
+            // Update Fokus Adaptive & Rekomendasi
+            if (totalSessions > 0) {
+                document.getElementById('focusArea').innerText = lowestCard;
+                document.getElementById('parentRecommendationText').innerHTML = 
+                    `Berdasarkan data latihan, anak memiliki akurasi rata-rata modul angka <span class="font-black text-emerald-600">${numAvg}%</span> dan huruf <span class="font-black text-posterOrange">${letAvg}%</span>. Robot memprioritaskan <span class="font-black text-posterOrange">${lowestCard}</span> untuk latihan berikutnya.`;
+                
+                document.getElementById('parentTipsList').innerHTML = `
+                    <li>Berikan pujian pada modul yang sudah dikuasai.</li>
+                    <li>Latih pengenalan visual kartu <b>${lowestCard}</b> saat belajar bersama di rumah.</li>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
