@@ -25,12 +25,12 @@
             theme: {
                 extend: {
                     colors: {
-                        posterBg: '#73b2dd',       // Sky Blue Background[cite: 2]
-                        posterCard: '#b3d6f1',     // Soft Powder Blue[cite: 2]
-                        posterDarkCard: '#3f6b97', // Steel Blue[cite: 2]
-                        posterNavy: '#1e3d60',     // Deep Denim Text[cite: 2]
-                        posterYellow: '#f3b21b',   // Bright Crown/Sparkle Yellow[cite: 2]
-                        posterOrange: '#ff6f28',   // Action Button Orange[cite: 1]
+                        posterBg: '#73b2dd',       
+                        posterCard: '#b3d6f1',     
+                        posterDarkCard: '#3f6b97', 
+                        posterNavy: '#1e3d60',     
+                        posterYellow: '#f3b21b',   
+                        posterOrange: '#ff6f28',   
                     }
                 }
             }
@@ -152,6 +152,10 @@
                             <i data-lucide="sparkles" class="w-5 h-5 text-posterYellow fill-posterYellow"></i>
                         </div>
                         <p id="displayChildAge" class="text-xs font-bold text-slate-500 mt-0.5">Umur: - Tahun • Status: Belajar Aktif bersama Smart Buddy</p>
+                        <!-- TOMBOL HAPUS DATA DITAMBAHKAN DI SINI -->
+                        <button onclick="resetData()" class="mt-2 bg-red-500 hover:bg-red-600 text-white text-[11px] font-black px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1 w-max">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Kosongkan Riwayat
+                        </button>
                     </div>
                 </div>
                 
@@ -428,9 +432,17 @@
                 updateBadge('numBadge', numAvg, numCount);
                 updateBadge('letBadge', letAvg, letCount);
 
-                // Update Total Sesi & Durasi
+                // Update Total Sesi
                 document.getElementById('totalSessions').innerText = `${total} Sesi`;
-                document.getElementById('totalLearningTime').innerText = `${total * 5} Menit`;
+                
+                // KALKULASI DURASI DINAMIS (PERBAIKAN)
+                let totalDuration = 0;
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        totalDuration += data[key].duration ? parseInt(data[key].duration) : 1; 
+                    });
+                }
+                document.getElementById('totalLearningTime').innerText = `${totalDuration} Menit`;
 
                 // Update Grafik & Adaptive Recommendation
                 updateChartAndRecommendations(total, numAvg, letAvg);
@@ -460,14 +472,20 @@
             
             cardKeys.forEach(key => {
                 let cardObj = cardMastery[key];
-                let cardAcc = cardObj.total > 0 ? Math.round((cardObj.correct / cardObj.total) * 100) : (totalSessions > 0 ? (key <= '5' ? numAvg : letAvg) : 0);
+                
+                // KALKULASI GRAFIK BAR (PERBAIKAN: Kartu belum dipelajari tetap 0%)
+                let cardAcc = cardObj.total > 0 ? Math.round((cardObj.correct / cardObj.total) * 100) : 0;
+                
                 chartData.push(cardAcc);
 
-                if (cardAcc < lowestAcc) {
+                if (cardAcc < lowestAcc && cardObj.total > 0) {
                     lowestAcc = cardAcc;
                     lowestCard = key <= '5' ? `Angka ${key}` : `Huruf ${key}`;
                 }
             });
+
+            // Jika belum ada kartu yang dimainkan, kembalikan ke default
+            if (lowestAcc === 101) lowestCard = "-";
 
             // Refresh Chart
             if (masteryChart) {
@@ -479,12 +497,32 @@
             if (totalSessions > 0) {
                 document.getElementById('focusArea').innerText = lowestCard;
                 document.getElementById('parentRecommendationText').innerHTML = 
-                    `Berdasarkan data latihan, anak memiliki akurasi rata-rata modul angka <span class="font-black text-emerald-600">${numAvg}%</span> dan huruf <span class="font-black text-posterOrange">${letAvg}%</span>. Robot memprioritaskan <span class="font-black text-posterOrange">${lowestCard}</span> untuk latihan berikutnya.`;
+                    `Berdasarkan data latihan, anak memiliki akurasi rata-rata modul angka <span class="font-black text-emerald-600">${numAvg}%</span> dan huruf <span class="font-black text-posterOrange">${letAvg}%</span>. Robot memprioritaskan <span class="font-black text-posterOrange">${lowestCard !== "-" ? lowestCard : "pengenalan dasar"}</span> untuk latihan berikutnya.`;
                 
                 document.getElementById('parentTipsList').innerHTML = `
                     <li>Berikan pujian pada modul yang sudah dikuasai.</li>
-                    <li>Latih pengenalan visual kartu <b>${lowestCard}</b> saat belajar bersama di rumah.</li>
+                    <li>Latih pengenalan visual kartu <b>${lowestCard !== "-" ? lowestCard : "Angka/Huruf"}</b> saat belajar bersama di rumah.</li>
                 `;
+            } else {
+                document.getElementById('focusArea').innerText = "-";
+                document.getElementById('parentRecommendationText').innerHTML = "Sistem sedang menunggu data sesi belajar pertama anak dari Smart Little Buddy.";
+                document.getElementById('parentTipsList').innerHTML = `
+                    <li>Lakukan sesi pengenalan kartu angka 1–5 secara menyenangkan.</li>
+                    <li>Dampingi anak saat memilih kartu jawaban di depan sensor robot.</li>
+                `;
+            }
+        }
+
+        // -------------------------------------------------------------
+        // FUNGSI HAPUS DATA (PERBAIKAN)
+        // -------------------------------------------------------------
+        function resetData() {
+            if(confirm("Yakin ingin menghapus seluruh riwayat belajar anak dari database?")) {
+                logsRef.remove().then(() => {
+                    alert("Seluruh data berhasil dikosongkan!");
+                }).catch((error) => {
+                    alert("Gagal menghapus data: " + error.message);
+                });
             }
         }
     </script>
