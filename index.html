@@ -244,7 +244,6 @@
                     Riwayat Sesi Belajar Realtime
                 </h3>
 
-                <!-- whitespace-nowrap prevents layout breaking on small screens -->
                 <div class="overflow-x-auto no-scrollbar bg-white rounded-2xl border-2 border-blue-100 p-1 sm:p-2">
                     <table class="w-full text-left text-[10px] sm:text-sm whitespace-nowrap">
                         <thead class="bg-posterCard text-posterNavy font-black text-[10px] sm:text-xs border-b border-blue-200">
@@ -271,10 +270,13 @@
         lucide.createIcons();
 
         // -------------------------------------------------------------
-        // FIREBASE REALTIME DB CONFIGURATION
+        // FIREBASE REALTIME DB CONFIGURATION (Disamakan dengan robo_kids)
         // -------------------------------------------------------------
         const firebaseConfig = {
-            databaseURL: "https://smert-little-buddy-default-rtdb.asia-southeast1.firebasedatabase.app/"
+            apiKey: "AIzaSyA7CyKCslPjQod0vu-uEZWQaZD0msZNQRw",
+            authDomain: "smart-little-buddy-sgdrc.firebaseapp.com",
+            databaseURL: "https://smart-little-buddy-sgdrc-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smart-little-buddy-sgdrc"
         };
         
         if (!firebase.apps.length) {
@@ -341,7 +343,7 @@
                             '#3f6b97', '#3f6b97', '#3f6b97', '#3f6b97', '#3f6b97',
                             '#73b2dd', '#ff6f28', '#73b2dd', '#ff6f28', '#73b2dd'
                         ],
-                        borderRadius: 4
+                        borderRadius: 6
                     }]
                 },
                 options: {
@@ -369,7 +371,7 @@
                 let numAccSum = 0, numCount = 0;
                 let letAccSum = 0, letCount = 0;
 
-                // Reset kartu
+                // Reset akumulasi data kartu
                 Object.keys(cardMastery).forEach(k => { cardMastery[k] = { total: 0, correct: 0 }; });
 
                 if (data) {
@@ -380,45 +382,70 @@
                         const item = data[key];
                         const row = document.createElement('tr');
                         
-                        // Parse Akurasi
+                        let modStr = item.module || '';
+                        let statusStr = item.status || 'Selesai';
                         let accVal = parseInt(item.accuracy) || 0;
-                        
-                        if (item.module && item.module.toLowerCase().includes('number')) {
+
+                        // Ekstraksi Kartu dari data
+                        let extractedCard = "";
+                        if (item.card) {
+                            extractedCard = item.card.toString().toUpperCase().replace('CARD ', '').trim();
+                        } else {
+                            // Ekstrak karakter kartu dari string modul (1-5 atau A-E)
+                            let match = modStr.match(/\b([1-5]|[A-E])\b/i);
+                            if (match) extractedCard = match[1].toUpperCase();
+                        }
+
+                        // Penentuan Jenis Modul (Angka vs Huruf)
+                        let isNumber = ['1','2','3','4','5'].includes(extractedCard) || modStr.toLowerCase().includes('angka') || modStr.toLowerCase().includes('number');
+                        let isLetter = ['A','B','C','D','E'].includes(extractedCard) || modStr.toLowerCase().includes('huruf') || modStr.toLowerCase().includes('letter');
+
+                        if (isNumber) {
                             numAccSum += accVal;
                             numCount++;
-                        } else if (item.module && item.module.toLowerCase().includes('letter')) {
+                        } else if (isLetter) {
                             letAccSum += accVal;
                             letCount++;
                         }
 
-                        // Akumulasi data spesifik kartu
-                        if (item.card) {
-                            let c = item.card.toString().toUpperCase().replace('CARD ', '');
-                            if (cardMastery[c]) {
-                                cardMastery[c].total += 1;
-                                if (accVal >= 80) cardMastery[c].correct += 1;
+                        // Akumulasi Statistik Penguasaan per Kartu
+                        if (extractedCard && cardMastery[extractedCard]) {
+                            cardMastery[extractedCard].total += 1;
+                            if (statusStr === 'BENAR' || statusStr === 'Selesai' || accVal >= 80) {
+                                cardMastery[extractedCard].correct += 1;
                             }
                         }
 
-                        let statusBadge = accVal >= 80
-                            ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] sm:text-[10px] font-black rounded-full">Sangat Baik</span>`
-                            : `<span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] sm:text-[10px] font-black rounded-full">Perlu Latihan</span>`;
+                        // Format Tampilan Kolom Tabel
+                        let displayMode = modStr.toLowerCase().includes('kuis') ? 'Mode Kuis' : 'Mode Belajar';
+                        let displaySoal = item.totalQuestions || extractedCard || '-';
+                        let displayJawaban = item.scoreDetail || extractedCard || '-';
+
+                        // Format Badge Evaluasi
+                        let statusBadge = '';
+                        if (statusStr === 'BENAR' || statusStr === 'Sangat Baik') {
+                            statusBadge = `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] sm:text-[10px] font-black rounded-full">BENAR 🟢</span>`;
+                        } else if (statusStr === 'SALAH') {
+                            statusBadge = `<span class="px-2 py-0.5 bg-rose-100 text-rose-700 text-[9px] sm:text-[10px] font-black rounded-full">SALAH 🔴</span>`;
+                        } else {
+                            statusBadge = `<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[9px] sm:text-[10px] font-black rounded-full">Selesai 🔵</span>`;
+                        }
 
                         row.innerHTML = `
                             <td class="p-2 sm:p-3 text-slate-500">${item.time || 'Baru Saja'}</td>
-                            <td class="p-2 sm:p-3 font-black text-posterDarkCard">${item.module || 'General'}</td>
-                            <td class="p-2 sm:p-3">${item.totalQuestions || '1'}</td>
-                            <td class="p-2 sm:p-3">${item.scoreDetail || '-'}</td>
+                            <td class="p-2 sm:p-3 font-black text-posterDarkCard">${displayMode}</td>
+                            <td class="p-2 sm:p-3 font-bold">${displaySoal}</td>
+                            <td class="p-2 sm:p-3 font-bold">${displayJawaban}</td>
                             <td class="p-2 sm:p-3 font-black text-posterOrange">${item.accuracy || '0%'}</td>
                             <td class="p-2 sm:p-3">${statusBadge}</td>
                         `;
                         sessionLogsTable.appendChild(row);
                     });
                 } else {
-                    sessionLogsTable.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-bold">Belum ada riwayat.</td></tr>`;
+                    sessionLogsTable.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-bold">Belum ada riwayat sesi belajar.</td></tr>`;
                 }
 
-                // Kalkulasi rata-rata modul
+                // Kalkulasi Rata-rata Modul
                 let numAvg = numCount > 0 ? Math.round(numAccSum / numCount) : 0;
                 let letAvg = letCount > 0 ? Math.round(letAccSum / letCount) : 0;
 
@@ -429,16 +456,10 @@
                 updateBadge('numBadge', numAvg, numCount);
                 updateBadge('letBadge', letAvg, letCount);
 
-                // Update Total Sesi
+                // Update Total Sesi & Durasi
                 document.getElementById('totalSessions').innerText = `${total}`;
                 
-                // KALKULASI DURASI DINAMIS
-                let totalDuration = 0;
-                if (data) {
-                    Object.keys(data).forEach(key => {
-                        totalDuration += data[key].duration ? parseInt(data[key].duration) : 1; 
-                    });
-                }
+                let totalDuration = total * 2; // Rata-rata 2 menit per sesi interaktif
                 document.getElementById('totalLearningTime').innerText = `${totalDuration} Menit`;
 
                 // Update Grafik & Rekomendasi
@@ -491,8 +512,8 @@
                     `Akurasi rata-rata modul angka <span class="font-black text-emerald-600">${numAvg}%</span> dan huruf <span class="font-black text-posterOrange">${letAvg}%</span>. Latihan prioritas berikutnya: <span class="font-black text-posterOrange">${lowestCard !== "-" ? lowestCard : "Modul Dasar"}</span>.`;
                 
                 document.getElementById('parentTipsList').innerHTML = `
-                    <li>Berikan pujian pada modul yang sudah dikuasai.</li>
-                    <li>Latih pengenalan visual kartu <b>${lowestCard !== "-" ? lowestCard : "Angka/Huruf"}</b> bersama.</li>
+                    <li>Berikan pujian pada modul yang sudah dikuasai anak.</li>
+                    <li>Latih pengenalan visual kartu <b>${lowestCard !== "-" ? lowestCard : "Angka/Huruf"}</b> secara berkala.</li>
                 `;
             } else {
                 document.getElementById('focusArea').innerText = "-";
