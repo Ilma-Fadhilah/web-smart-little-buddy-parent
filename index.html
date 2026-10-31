@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Smart Little Buddy - Parent Monitoring</title>
     
     <!-- Favicon Icon Mahkota Imut di Tab Browser -->
@@ -46,6 +46,9 @@
         .poster-glow {
             box-shadow: 0 10px 25px -5px rgba(30, 61, 96, 0.25);
         }
+        /* Sembunyikan scrollbar tapi tetap bisa di-scroll di tabel */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="text-posterNavy min-h-screen pb-12">
@@ -54,44 +57,41 @@
     <!-- SECTION 1: MODAL INPUT IDENTITAS SISWA -->
     <!-- =================================================================== -->
     <div id="loginSection" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-posterNavy/80 backdrop-blur-sm">
-        <div class="bg-posterCard border-4 border-white max-w-md w-full rounded-3xl p-6 sm:p-8 shadow-2xl poster-glow space-y-5 text-center">
+        <div class="bg-posterCard border-4 border-white max-w-md w-full rounded-3xl p-5 sm:p-8 shadow-2xl poster-glow space-y-4 sm:space-y-5 text-center">
             
             <!-- Crown & Header -->
             <div class="space-y-2">
-                <div class="relative w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-md">
-                    <i data-lucide="crown" class="w-10 h-10 text-posterYellow fill-posterYellow"></i>
-                    <i data-lucide="sparkles" class="w-5 h-5 text-posterYellow absolute -top-1 -right-1 animate-pulse"></i>
+                <div class="relative w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-md">
+                    <i data-lucide="crown" class="w-8 h-8 sm:w-10 sm:h-10 text-posterYellow fill-posterYellow"></i>
+                    <i data-lucide="sparkles" class="w-4 h-4 sm:w-5 sm:h-5 text-posterYellow absolute -top-1 -right-1 animate-pulse"></i>
                 </div>
-                <h1 class="text-2xl font-black text-posterNavy tracking-wider">SMART LITTLE BUDDY</h1>
-                <p class="text-xs font-bold text-posterNavy/80">Parent Monitoring Portal • Team Robo Knights</p>
+                <h1 class="text-xl sm:text-2xl font-black text-posterNavy tracking-wider">SMART BUDDY</h1>
+                <p class="text-[10px] sm:text-xs font-bold text-posterNavy/80">Parent Monitoring Portal • Robo Knights</p>
             </div>
 
             <!-- Form Identitas Anak -->
             <div class="bg-white p-4 sm:p-5 rounded-2xl border-2 border-blue-100 space-y-4 text-left shadow-sm">
-                <h2 class="text-sm font-black text-posterNavy flex items-center gap-2">
+                <h2 class="text-xs sm:text-sm font-black text-posterNavy flex items-center gap-2">
                     <i data-lucide="user-check" class="w-4 h-4 text-posterOrange"></i>
-                    Identitas Siswa (Anak)
+                    Identitas Anak
                 </h2>
 
                 <div>
-                    <label class="text-[11px] font-black text-posterNavy/70 uppercase">NAMA LENGKAP ANAK</label>
+                    <label class="text-[10px] sm:text-[11px] font-black text-posterNavy/70 uppercase">NAMA LENGKAP</label>
                     <input type="text" id="inputChildName" placeholder="Tuliskan nama anak"
-                        class="w-full mt-1 bg-blue-50 border-2 border-blue-200 focus:border-posterOrange text-posterNavy text-xs font-bold rounded-xl px-3.5 py-3 outline-none transition">
+                        class="w-full mt-1 bg-blue-50 border-2 border-blue-200 focus:border-posterOrange text-posterNavy text-xs font-bold rounded-xl px-3.5 py-2.5 sm:py-3 outline-none transition">
                 </div>
                 <div>
-                    <label class="text-[11px] font-black text-posterNavy/70 uppercase">UMUR ANAK (TAHUN)</label>
-                    <input type="number" id="inputChildAge" placeholder="Tuliskan umur anak" min="3" max="7"
-                        class="w-full mt-1 bg-blue-50 border-2 border-blue-200 focus:border-posterOrange text-posterNavy text-xs font-bold rounded-xl px-3.5 py-3 outline-none transition">
+                    <label class="text-[10px] sm:text-[11px] font-black text-posterNavy/70 uppercase">UMUR (TAHUN)</label>
+                    <input type="number" id="inputChildAge" placeholder="Contoh: 5" min="3" max="7"
+                        class="w-full mt-1 bg-blue-50 border-2 border-blue-200 focus:border-posterOrange text-posterNavy text-xs font-bold rounded-xl px-3.5 py-2.5 sm:py-3 outline-none transition">
                 </div>
 
                 <!-- Tombol Lanjut ke Dashboard -->
-                <button type="button" onclick="goToDashboard()" class="w-full mt-2 bg-posterOrange hover:bg-orange-600 text-white font-black text-xs sm:text-sm py-3.5 px-4 rounded-2xl transition shadow-lg border-2 border-white flex items-center justify-center gap-2">
-                    <i data-lucide="arrow-right-circle" class="w-5 h-5"></i>
-                    Lanjut ke Dashboard
+                <button type="button" onclick="goToDashboard()" class="w-full mt-2 bg-posterOrange hover:bg-orange-600 text-white font-black text-xs sm:text-sm py-3 px-4 rounded-2xl transition shadow-lg border-2 border-white flex items-center justify-center gap-2">
+                    Buka Dashboard <i data-lucide="arrow-right-circle" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                 </button>
             </div>
-            
-            <p class="text-[11px] text-posterNavy/70 font-bold">Smart Little Buddy Parent Dashboard</p>
         </div>
     </div>
 
@@ -100,113 +100,108 @@
     <!-- =================================================================== -->
     <div id="mainDashboard" class="hidden">
         
-        <!-- Header Navigation -->
+        <!-- Header Navigation (Mobile Optimized) -->
         <header class="bg-[#5c9ecf] border-b-4 border-white/60 sticky top-0 z-50 shadow-md">
-            <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-4">
+            <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex justify-between items-center gap-2">
                 
                 <!-- Team Identity & Crown -->
-                <div class="flex items-center gap-3">
-                    <div class="relative bg-white p-2.5 rounded-2xl shadow-md flex items-center justify-center">
-                        <i data-lucide="crown" class="w-7 h-7 text-posterYellow fill-posterYellow"></i>
-                        <i data-lucide="sparkles" class="w-4 h-4 text-posterYellow absolute -top-1 -right-1 animate-pulse"></i>
+                <div class="flex items-center gap-2 sm:gap-3 w-2/3">
+                    <div class="relative bg-white p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl shadow-md shrink-0">
+                        <i data-lucide="crown" class="w-5 h-5 sm:w-7 sm:h-7 text-posterYellow fill-posterYellow"></i>
                     </div>
-                    <div>
+                    <div class="truncate">
                         <div class="flex items-center gap-1.5">
-                            <h1 class="font-black text-xl sm:text-2xl text-white tracking-wider drop-shadow-sm">SMART LITTLE BUDDY</h1>
-                            <span class="text-xs font-black bg-posterYellow text-posterNavy px-2 py-0.5 rounded-full uppercase shadow-sm">Parent Monitor</span>
+                            <h1 class="font-black text-sm sm:text-xl md:text-2xl text-white tracking-wider drop-shadow-sm truncate">SMART BUDDY</h1>
+                            <span class="hidden sm:inline-block text-[10px] sm:text-xs font-black bg-posterYellow text-posterNavy px-2 py-0.5 rounded-full uppercase shadow-sm">Parent</span>
                         </div>
-                        <p class="text-xs text-blue-100 font-bold tracking-wide">Learning Portal by Robo Knights</p>
+                        <p class="text-[9px] sm:text-xs text-blue-100 font-bold tracking-wide truncate">Monitoring Portal</p>
                     </div>
                 </div>
 
                 <!-- Profile & Logout Badge -->
-                <div class="flex items-center gap-3">
-                    <div class="hidden sm:flex items-center gap-2 bg-white/90 border-2 border-white px-3.5 py-1.5 rounded-2xl shadow-sm">
+                <div class="flex items-center justify-end gap-2 w-1/3">
+                    <div class="hidden md:flex items-center gap-2 bg-white/90 border-2 border-white px-3.5 py-1.5 rounded-2xl shadow-sm">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="text-xs font-black text-posterNavy">Firebase Synced 🟢</span>
+                        <span class="text-xs font-black text-posterNavy">Database 🟢</span>
                     </div>
-                    
-                    <div class="flex items-center gap-2 bg-posterDarkCard text-white px-3.5 py-1.5 rounded-2xl border-2 border-white/40 shadow-sm">
-                        <i data-lucide="user" class="w-4 h-4 text-posterYellow"></i>
-                        <span class="text-xs font-black">Parent Portal</span>
-                    </div>
-
-                    <button onclick="logout()" title="Keluar" class="bg-posterOrange hover:bg-orange-600 text-white p-2 rounded-2xl transition border-2 border-white shadow flex items-center justify-center">
+                    <button onclick="logout()" title="Keluar" class="bg-posterOrange hover:bg-orange-600 text-white p-2 sm:p-2.5 rounded-xl sm:rounded-2xl transition border-2 border-white shadow flex items-center justify-center shrink-0">
                         <i data-lucide="log-out" class="w-4 h-4"></i>
                     </button>
                 </div>
             </div>
         </header>
 
-        <main class="max-w-7xl mx-auto px-4 pt-6 space-y-6">
+        <main class="max-w-7xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
             
-            <!-- Student Info Header Banner -->
-            <div class="bg-white border-4 border-white p-5 rounded-3xl shadow-xl flex flex-wrap justify-between items-center gap-4 poster-glow">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 bg-posterCard rounded-2xl border-2 border-blue-200 flex items-center justify-center font-black text-posterNavy text-xl shadow-inner">
-                        <i data-lucide="heart" class="w-7 h-7 text-posterOrange fill-posterOrange"></i>
+            <!-- Student Info Header Banner (Mobile Optimized) -->
+            <div class="bg-white border-4 border-white p-4 sm:p-5 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 poster-glow">
+                
+                <div class="flex items-start sm:items-center gap-3 w-full md:w-auto">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 bg-posterCard rounded-2xl border-2 border-blue-200 flex items-center justify-center shadow-inner">
+                        <i data-lucide="heart" class="w-6 h-6 sm:w-7 sm:h-7 text-posterOrange fill-posterOrange"></i>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 id="displayChildName" class="text-lg sm:text-xl font-black text-posterNavy">Laporan Belajar Siswa</h2>
-                            <i data-lucide="sparkles" class="w-5 h-5 text-posterYellow fill-posterYellow"></i>
+                    <div class="w-full">
+                        <div class="flex items-center justify-between sm:justify-start gap-2">
+                            <h2 id="displayChildName" class="text-base sm:text-xl font-black text-posterNavy truncate">Laporan Siswa</h2>
+                            <i data-lucide="sparkles" class="w-4 h-4 sm:w-5 sm:h-5 text-posterYellow fill-posterYellow shrink-0"></i>
                         </div>
-                        <p id="displayChildAge" class="text-xs font-bold text-slate-500 mt-0.5">Umur: - Tahun • Status: Belajar Aktif bersama Smart Buddy</p>
-                        <!-- TOMBOL HAPUS DATA DITAMBAHKAN DI SINI -->
-                        <button onclick="resetData()" class="mt-2 bg-red-500 hover:bg-red-600 text-white text-[11px] font-black px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1 w-max">
+                        <p id="displayChildAge" class="text-[10px] sm:text-xs font-bold text-slate-500 mt-0.5">Umur: - Tahun</p>
+                        
+                        <!-- TOMBOL HAPUS DATA -->
+                        <button onclick="resetData()" class="mt-2 bg-red-500 hover:bg-red-600 text-white text-[10px] sm:text-[11px] font-black px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1 w-max">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Kosongkan Riwayat
                         </button>
                     </div>
                 </div>
                 
                 <!-- Durasi Belajar Realtime -->
-                <div class="flex items-center gap-4 bg-posterCard p-3 rounded-2xl border-2 border-white">
-                    <div class="text-right">
-                        <p class="text-[10px] font-black text-posterNavy/70 uppercase">Durasi Belajar Hari Ini</p>
-                        <p id="totalLearningTime" class="text-lg font-black text-posterNavy">0 Menit</p>
+                <div class="flex items-center justify-between w-full md:w-auto gap-3 sm:gap-4 bg-posterCard p-3 rounded-2xl border-2 border-white">
+                    <div class="text-left md:text-right">
+                        <p class="text-[9px] sm:text-[10px] font-black text-posterNavy/70 uppercase">Durasi Belajar Hari Ini</p>
+                        <p id="totalLearningTime" class="text-base sm:text-lg font-black text-posterNavy">0 Menit</p>
                     </div>
-                    <div class="bg-white p-2 rounded-xl text-posterOrange border border-blue-100">
-                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    <div class="bg-white p-2 rounded-xl text-posterOrange border border-blue-100 shrink-0">
+                        <i data-lucide="clock" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Metric Summary Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
-                    <p class="text-xs text-posterNavy font-bold">Modul Angka (1–5)</p>
-                    <p id="numScore" class="text-2xl sm:text-3xl font-black text-posterNavy mt-1">0%</p>
-                    <span id="numBadge" class="inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-400 text-white">Belum Ada Sesi</span>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                <div class="bg-posterCard border-[3px] sm:border-4 border-white p-3 sm:p-4 rounded-3xl shadow-xl">
+                    <p class="text-[10px] sm:text-xs text-posterNavy font-bold">Modul Angka</p>
+                    <p id="numScore" class="text-xl sm:text-2xl md:text-3xl font-black text-posterNavy mt-0.5 sm:mt-1">0%</p>
+                    <span id="numBadge" class="inline-block mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] font-black px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-400 text-white">Belum Ada Sesi</span>
                 </div>
 
-                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
-                    <p class="text-xs text-posterNavy font-bold">Modul Huruf (A–E)</p>
-                    <p id="letScore" class="text-2xl sm:text-3xl font-black text-posterNavy mt-1">0%</p>
-                    <span id="letBadge" class="inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-400 text-white">Belum Ada Sesi</span>
+                <div class="bg-posterCard border-[3px] sm:border-4 border-white p-3 sm:p-4 rounded-3xl shadow-xl">
+                    <p class="text-[10px] sm:text-xs text-posterNavy font-bold">Modul Huruf</p>
+                    <p id="letScore" class="text-xl sm:text-2xl md:text-3xl font-black text-posterNavy mt-0.5 sm:mt-1">0%</p>
+                    <span id="letBadge" class="inline-block mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] font-black px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-400 text-white">Belum Ada Sesi</span>
                 </div>
 
-                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
-                    <p class="text-xs text-posterNavy font-bold">Total Sesi Belajar</p>
-                    <p id="totalSessions" class="text-2xl sm:text-3xl font-black text-posterNavy mt-1">0 Sesi</p>
-                    <span class="inline-block mt-2 text-[10px] text-posterNavy/70 font-bold">Tersinkron di Cloud</span>
+                <div class="bg-posterCard border-[3px] sm:border-4 border-white p-3 sm:p-4 rounded-3xl shadow-xl">
+                    <p class="text-[10px] sm:text-xs text-posterNavy font-bold">Total Sesi</p>
+                    <p id="totalSessions" class="text-xl sm:text-2xl md:text-3xl font-black text-posterNavy mt-0.5 sm:mt-1">0</p>
+                    <span class="inline-block mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] text-posterNavy/70 font-bold">Tersinkron DB</span>
                 </div>
 
-                <div class="bg-posterCard border-4 border-white p-4 rounded-3xl shadow-xl">
-                    <p class="text-xs text-posterNavy font-bold">Fokus Adaptive Robot</p>
-                    <p id="focusArea" class="text-2xl sm:text-3xl font-black text-posterDarkCard mt-1">-</p>
-                    <span class="inline-block mt-2 text-[10px] text-posterNavy/70 font-bold">Target Latihan Otomatis</span>
+                <div class="bg-posterCard border-[3px] sm:border-4 border-white p-3 sm:p-4 rounded-3xl shadow-xl">
+                    <p class="text-[10px] sm:text-xs text-posterNavy font-bold">Target Evaluasi</p>
+                    <p id="focusArea" class="text-xl sm:text-2xl md:text-3xl font-black text-posterDarkCard mt-0.5 sm:mt-1">-</p>
+                    <span class="inline-block mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] text-posterNavy/70 font-bold">Latihan Otomatis</span>
                 </div>
             </div>
 
             <!-- Chart & Adaptive Learning Insights -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Mastery Chart -->
-                <div class="lg:col-span-2 bg-posterCard border-4 border-white p-4 sm:p-6 rounded-3xl shadow-xl poster-glow">
-                    <h3 class="font-black text-posterNavy flex items-center gap-2 mb-4 text-sm sm:text-base">
-                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-posterOrange"></i>
-                        Grafik Penguasaan Kartu (1–5 & A–E)
+                <div class="lg:col-span-2 bg-posterCard border-4 border-white p-3 sm:p-6 rounded-3xl shadow-xl poster-glow">
+                    <h3 class="font-black text-posterNavy flex items-center gap-2 mb-3 sm:mb-4 text-xs sm:text-base">
+                        <i data-lucide="bar-chart-2" class="w-4 h-4 sm:w-5 sm:h-5 text-posterOrange"></i>
+                        Grafik Penguasaan Kartu
                     </h3>
-                    <div class="relative w-full aspect-[16/9] sm:aspect-[2/1] bg-white p-3 rounded-2xl border-2 border-blue-100">
+                    <div class="relative w-full aspect-[4/3] sm:aspect-[2/1] bg-white p-2 sm:p-3 rounded-2xl border-2 border-blue-100">
                         <canvas id="masteryChart"></canvas>
                     </div>
                 </div>
@@ -214,51 +209,52 @@
                 <!-- Parent Tips Box -->
                 <div class="bg-posterCard border-4 border-white p-4 sm:p-6 rounded-3xl shadow-xl flex flex-col justify-between poster-glow">
                     <div>
-                        <div class="flex items-center gap-2 text-posterNavy bg-white p-3 rounded-2xl border-2 border-blue-100 mb-4 shadow-sm">
-                            <i data-lucide="sparkles" class="w-5 h-5 text-posterYellow fill-posterYellow"></i>
+                        <div class="flex items-center gap-2 text-posterNavy bg-white p-2.5 sm:p-3 rounded-2xl border-2 border-blue-100 mb-3 sm:mb-4 shadow-sm">
+                            <i data-lucide="sparkles" class="w-4 h-4 sm:w-5 sm:h-5 text-posterYellow fill-posterYellow"></i>
                             <h3 class="font-black text-xs sm:text-sm">Rekomendasi Orang Tua</h3>
                         </div>
 
-                        <p id="parentRecommendationText" class="text-xs text-posterNavy font-bold leading-relaxed mb-4">
+                        <p id="parentRecommendationText" class="text-[11px] sm:text-xs text-posterNavy font-bold leading-relaxed mb-3 sm:mb-4">
                             Sistem sedang menunggu data sesi belajar pertama anak dari Smart Little Buddy.
                         </p>
 
-                        <div class="bg-white p-3.5 rounded-2xl border-2 border-blue-100 space-y-2 shadow-sm">
-                            <p class="text-xs font-black text-posterNavy flex items-center gap-1.5">
-                                <i data-lucide="crown" class="w-4 h-4 text-posterYellow fill-posterYellow"></i>
-                                Tips Pendampingan di Rumah:
+                        <div class="bg-white p-3 sm:p-3.5 rounded-2xl border-2 border-blue-100 space-y-1.5 sm:space-y-2 shadow-sm">
+                            <p class="text-[11px] sm:text-xs font-black text-posterNavy flex items-center gap-1.5">
+                                <i data-lucide="crown" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-posterYellow fill-posterYellow"></i>
+                                Tips di Rumah:
                             </p>
-                            <ul id="parentTipsList" class="text-xs text-posterNavy/80 font-bold space-y-1.5 pl-4 list-disc">
+                            <ul id="parentTipsList" class="text-[10px] sm:text-xs text-posterNavy/80 font-bold space-y-1 sm:space-y-1.5 pl-4 list-disc">
                                 <li>Lakukan sesi pengenalan kartu angka 1–5 secara menyenangkan.</li>
                                 <li>Dampingi anak saat memilih kartu jawaban di depan sensor robot.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="mt-6 pt-4 border-t-2 border-white/60 flex justify-between items-center text-[11px] font-black text-posterNavy">
-                        <span>Database Status:</span>
-                        <span class="text-emerald-600">Firebase Synced 🟢</span>
+                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t-2 border-white/60 flex justify-between items-center text-[10px] sm:text-[11px] font-black text-posterNavy">
+                        <span>Status Sistem:</span>
+                        <span class="text-emerald-600">Online 🟢</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Realtime Logs Table -->
-            <div class="bg-posterCard border-4 border-white p-4 sm:p-6 rounded-3xl shadow-xl poster-glow">
-                <h3 class="font-black text-posterNavy flex items-center gap-2 mb-4 text-sm sm:text-base">
-                    <i data-lucide="database" class="w-5 h-5 text-posterOrange"></i>
-                    Riwayat Sesi Belajar Realtime Database
+            <!-- Realtime Logs Table (Scrollable on HP) -->
+            <div class="bg-posterCard border-4 border-white p-3 sm:p-6 rounded-3xl shadow-xl poster-glow">
+                <h3 class="font-black text-posterNavy flex items-center gap-2 mb-3 sm:mb-4 text-xs sm:text-base">
+                    <i data-lucide="database" class="w-4 h-4 sm:w-5 sm:h-5 text-posterOrange"></i>
+                    Riwayat Sesi Belajar Realtime
                 </h3>
 
-                <div class="overflow-x-auto bg-white rounded-2xl border-2 border-blue-100 p-2">
-                    <table class="w-full text-left text-xs sm:text-sm">
-                        <thead class="bg-posterCard text-posterNavy font-black text-xs border-b border-blue-200">
+                <!-- whitespace-nowrap prevents layout breaking on small screens -->
+                <div class="overflow-x-auto no-scrollbar bg-white rounded-2xl border-2 border-blue-100 p-1 sm:p-2">
+                    <table class="w-full text-left text-[10px] sm:text-sm whitespace-nowrap">
+                        <thead class="bg-posterCard text-posterNavy font-black text-[10px] sm:text-xs border-b border-blue-200">
                             <tr>
-                                <th class="p-3">Waktu Sesi</th>
-                                <th class="p-3">Modul</th>
-                                <th class="p-3">Total Soal</th>
-                                <th class="p-3">Hasil Jawaban</th>
-                                <th class="p-3">Akurasi</th>
-                                <th class="p-3">Status Evaluasi</th>
+                                <th class="p-2 sm:p-3">Waktu Sesi</th>
+                                <th class="p-2 sm:p-3">Modul</th>
+                                <th class="p-2 sm:p-3">Soal</th>
+                                <th class="p-2 sm:p-3">Jawaban</th>
+                                <th class="p-2 sm:p-3">Akurasi</th>
+                                <th class="p-2 sm:p-3">Evaluasi</th>
                             </tr>
                         </thead>
                         <tbody id="sessionLogs" class="divide-y divide-blue-100 text-posterNavy font-bold">
@@ -316,8 +312,8 @@
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('mainDashboard').classList.remove('hidden');
 
-            document.getElementById('displayChildName').innerText = `Laporan Belajar: ${childName}`;
-            document.getElementById('displayChildAge').innerText = `Umur: ${childAge} Tahun • Status: Belajar Aktif bersama Smart Buddy`;
+            document.getElementById('displayChildName').innerText = childName;
+            document.getElementById('displayChildAge').innerText = `Usia: ${childAge} Tahun`;
 
             initChart();
             listenFirebaseRealtime();
@@ -337,23 +333,24 @@
             masteryChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Angka 1', 'Angka 2', 'Angka 3', 'Angka 4', 'Angka 5', 'Huruf A', 'Huruf B', 'Huruf C', 'Huruf D', 'Huruf E'],
+                    labels: ['1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E'],
                     datasets: [{
-                        label: 'Tingkat Penguasaan (%)',
+                        label: 'Penguasaan (%)',
                         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                         backgroundColor: [
                             '#3f6b97', '#3f6b97', '#3f6b97', '#3f6b97', '#3f6b97',
                             '#73b2dd', '#ff6f28', '#73b2dd', '#ff6f28', '#73b2dd'
                         ],
-                        borderRadius: 8
+                        borderRadius: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: true, max: 100, ticks: { color: '#1e3d60', font: { weight: 'bold' } } },
-                        x: { ticks: { color: '#1e3d60', font: { weight: 'bold' } } }
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#1e3d60', font: { weight: 'bold', size: 10 } } },
+                        x: { ticks: { color: '#1e3d60', font: { weight: 'bold', size: 10 } } }
                     }
                 }
             });
@@ -394,7 +391,7 @@
                             letCount++;
                         }
 
-                        // Akumulasi data spesifik kartu jika ada
+                        // Akumulasi data spesifik kartu
                         if (item.card) {
                             let c = item.card.toString().toUpperCase().replace('CARD ', '');
                             if (cardMastery[c]) {
@@ -404,21 +401,21 @@
                         }
 
                         let statusBadge = accVal >= 80
-                            ? `<span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-full">Sangat Baik</span>`
-                            : `<span class="px-2.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-black rounded-full">Perlu Ditingkatkan</span>`;
+                            ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] sm:text-[10px] font-black rounded-full">Sangat Baik</span>`
+                            : `<span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] sm:text-[10px] font-black rounded-full">Perlu Latihan</span>`;
 
                         row.innerHTML = `
-                            <td class="p-3 text-slate-500">${item.time || 'Baru Saja'}</td>
-                            <td class="p-3 font-black text-posterDarkCard">${item.module || 'General'}</td>
-                            <td class="p-3">${item.totalQuestions || '1 Soal'}</td>
-                            <td class="p-3">${item.scoreDetail || '-'}</td>
-                            <td class="p-3 font-black text-posterOrange">${item.accuracy || '0%'}</td>
-                            <td class="p-3">${statusBadge}</td>
+                            <td class="p-2 sm:p-3 text-slate-500">${item.time || 'Baru Saja'}</td>
+                            <td class="p-2 sm:p-3 font-black text-posterDarkCard">${item.module || 'General'}</td>
+                            <td class="p-2 sm:p-3">${item.totalQuestions || '1'}</td>
+                            <td class="p-2 sm:p-3">${item.scoreDetail || '-'}</td>
+                            <td class="p-2 sm:p-3 font-black text-posterOrange">${item.accuracy || '0%'}</td>
+                            <td class="p-2 sm:p-3">${statusBadge}</td>
                         `;
                         sessionLogsTable.appendChild(row);
                     });
                 } else {
-                    sessionLogsTable.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-bold">Belum ada data sesi belajar di Firebase.</td></tr>`;
+                    sessionLogsTable.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-bold">Belum ada riwayat.</td></tr>`;
                 }
 
                 // Kalkulasi rata-rata modul
@@ -433,9 +430,9 @@
                 updateBadge('letBadge', letAvg, letCount);
 
                 // Update Total Sesi
-                document.getElementById('totalSessions').innerText = `${total} Sesi`;
+                document.getElementById('totalSessions').innerText = `${total}`;
                 
-                // KALKULASI DURASI DINAMIS (PERBAIKAN)
+                // KALKULASI DURASI DINAMIS
                 let totalDuration = 0;
                 if (data) {
                     Object.keys(data).forEach(key => {
@@ -444,7 +441,7 @@
                 }
                 document.getElementById('totalLearningTime').innerText = `${totalDuration} Menit`;
 
-                // Update Grafik & Adaptive Recommendation
+                // Update Grafik & Rekomendasi
                 updateChartAndRecommendations(total, numAvg, letAvg);
             });
         }
@@ -452,14 +449,14 @@
         function updateBadge(id, avg, count) {
             const el = document.getElementById(id);
             if (count === 0) {
-                el.innerText = "Belum Ada Sesi";
-                el.className = "inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-400 text-white";
+                el.innerText = "Belum Ada Data";
+                el.className = "inline-block mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] font-black px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-400 text-white";
             } else if (avg >= 80) {
-                el.innerText = "Sangat Menguasai";
-                el.className = "inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500 text-white";
+                el.innerText = "Sangat Dikuasai";
+                el.className = "inline-block mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] font-black px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-500 text-white";
             } else {
                 el.innerText = "Perlu Latihan";
-                el.className = "inline-block mt-2 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-posterOrange text-white";
+                el.className = "inline-block mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] font-black px-2 sm:px-2.5 py-0.5 rounded-full bg-posterOrange text-white";
             }
         }
 
@@ -472,10 +469,7 @@
             
             cardKeys.forEach(key => {
                 let cardObj = cardMastery[key];
-                
-                // KALKULASI GRAFIK BAR (PERBAIKAN: Kartu belum dipelajari tetap 0%)
                 let cardAcc = cardObj.total > 0 ? Math.round((cardObj.correct / cardObj.total) * 100) : 0;
-                
                 chartData.push(cardAcc);
 
                 if (cardAcc < lowestAcc && cardObj.total > 0) {
@@ -484,40 +478,35 @@
                 }
             });
 
-            // Jika belum ada kartu yang dimainkan, kembalikan ke default
             if (lowestAcc === 101) lowestCard = "-";
 
-            // Refresh Chart
             if (masteryChart) {
                 masteryChart.data.datasets[0].data = chartData;
                 masteryChart.update();
             }
 
-            // Update Fokus Adaptive & Rekomendasi
             if (totalSessions > 0) {
                 document.getElementById('focusArea').innerText = lowestCard;
                 document.getElementById('parentRecommendationText').innerHTML = 
-                    `Berdasarkan data latihan, anak memiliki akurasi rata-rata modul angka <span class="font-black text-emerald-600">${numAvg}%</span> dan huruf <span class="font-black text-posterOrange">${letAvg}%</span>. Robot memprioritaskan <span class="font-black text-posterOrange">${lowestCard !== "-" ? lowestCard : "pengenalan dasar"}</span> untuk latihan berikutnya.`;
+                    `Akurasi rata-rata modul angka <span class="font-black text-emerald-600">${numAvg}%</span> dan huruf <span class="font-black text-posterOrange">${letAvg}%</span>. Latihan prioritas berikutnya: <span class="font-black text-posterOrange">${lowestCard !== "-" ? lowestCard : "Modul Dasar"}</span>.`;
                 
                 document.getElementById('parentTipsList').innerHTML = `
                     <li>Berikan pujian pada modul yang sudah dikuasai.</li>
-                    <li>Latih pengenalan visual kartu <b>${lowestCard !== "-" ? lowestCard : "Angka/Huruf"}</b> saat belajar bersama di rumah.</li>
+                    <li>Latih pengenalan visual kartu <b>${lowestCard !== "-" ? lowestCard : "Angka/Huruf"}</b> bersama.</li>
                 `;
             } else {
                 document.getElementById('focusArea').innerText = "-";
-                document.getElementById('parentRecommendationText').innerHTML = "Sistem sedang menunggu data sesi belajar pertama anak dari Smart Little Buddy.";
+                document.getElementById('parentRecommendationText').innerHTML = "Menunggu data sesi belajar pertama anak dikirim dari Smart Buddy.";
                 document.getElementById('parentTipsList').innerHTML = `
-                    <li>Lakukan sesi pengenalan kartu angka 1–5 secara menyenangkan.</li>
-                    <li>Dampingi anak saat memilih kartu jawaban di depan sensor robot.</li>
+                    <li>Lakukan sesi pengenalan kartu 1–5 secara menyenangkan.</li>
+                    <li>Dampingi anak memilih kartu di depan sensor robot.</li>
                 `;
             }
         }
 
-        // -------------------------------------------------------------
-        // FUNGSI HAPUS DATA (PERBAIKAN)
-        // -------------------------------------------------------------
+        // FUNGSI HAPUS DATA 
         function resetData() {
-            if(confirm("Yakin ingin menghapus seluruh riwayat belajar anak dari database?")) {
+            if(confirm("Hapus seluruh riwayat belajar anak dari sistem?")) {
                 logsRef.remove().then(() => {
                     alert("Seluruh data berhasil dikosongkan!");
                 }).catch((error) => {
